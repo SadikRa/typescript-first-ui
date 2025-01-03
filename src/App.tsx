@@ -1,11 +1,13 @@
+import { Outlet } from "react-router-dom";
 import "./App.css";
-import { Button } from "./components/ui/button";
+import Navbar from "./components/layout/navbar";
 
 function App() {
   return (
     <>
       <div>
-        <Button>sadik</Button>
+        <Navbar></Navbar>
+        <Outlet />
       </div>
     </>
   );
