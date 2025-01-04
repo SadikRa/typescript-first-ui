@@ -1,11 +1,11 @@
-const logger = (state) => (next) => (action) => {
-    console.info(state.getState());
-    console.group(action.type);
-    const result = next(action);
-    console.info('next state', state.getState());
-    console.groupEnd()
-    return result
-}
+// const logger = (state) => (next) => (action) => {
+//     console.group(action.type);
+//     console.info(state.getState());
+//     const result = next(action);
+//     console.info('next state', state.getState());
+//     console.groupEnd()
+//     return result
+// }
 
 
-export default logger
+// export default logger
