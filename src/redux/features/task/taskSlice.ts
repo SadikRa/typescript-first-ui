@@ -17,6 +17,14 @@ const initialState: initialState = {
       isCompleted: false,
       priority: "high",
     },
+    {
+      id: "2324",
+      title: "init",
+      description: "create home page and routing",
+      dueDate: "2025",
+      isCompleted: false,
+      priority: "high",
+    },
     
   ],
   filter: "all"
