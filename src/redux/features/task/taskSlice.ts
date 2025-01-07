@@ -1,6 +1,6 @@
 import { RootState } from "@/redux/store";
 import { ITask } from "@/types";
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction, nanoid } from "@reduxjs/toolkit";
 
 interface initialState {
   tasks: ITask[];
@@ -10,18 +10,10 @@ interface initialState {
 const initialState: initialState = {
   tasks: [
     {
-      id: "2324",
-      title: "init",
-      description: "create home page and routing",
-      dueDate: "2025",
-      isCompleted: false,
-      priority: "low",
-    },
-    {
-      id: "234",
-      title: "init",
-      description: "create home page and routing",
-      dueDate: "2025",
+      id: "3232l323j32j3l32",
+      title: "sadik",
+      description: "I am a developer",
+      dueDate: "24january2025",
       isCompleted: false,
       priority: "high",
     },
@@ -29,13 +21,38 @@ const initialState: initialState = {
   filter: "all",
 };
 
+type DraftTask = Pick<ITask, "title" | "description" | "dueDate" | "priority">;
+
+const createTask = (taskData: DraftTask): ITask => {
+  return { id: nanoid(), isCompleted: false, ...taskData };
+};
+
 const taskSlice = createSlice({
   name: "task",
   initialState,
-  reducers: {},
+  reducers: {
+    addTask: (state, action: PayloadAction<ITask>) => {
+      const taskData = createTask(action.payload);
+      state.tasks.push(taskData);
+    },
+    toggleCompleteState: (state, action: PayloadAction<string>) => {
+      console.log(action);
+      state.tasks.forEach((task) =>
+        task.id == action.payload
+          ? (task.isCompleted = !task.isCompleted)
+          : task
+      );
+    },
+    deleteTask: (state, action: PayloadAction<string>) => {
+      state.tasks = state.tasks.filter((task) => task.id !== action.payload);
+    },
+  },
 });
 
 export const selectTasks = (state: RootState) => state.todo.tasks;
+
 export const selectFilter = (state: RootState) => state.todo.filter;
+
+export const { addTask, toggleCompleteState, deleteTask } = taskSlice.actions;
 
 export default taskSlice.reducer;

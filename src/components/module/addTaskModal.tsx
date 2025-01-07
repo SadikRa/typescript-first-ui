@@ -17,7 +17,7 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
-import { useForm } from "react-hook-form";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { Input } from "../ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -27,12 +27,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Calendar } from "../ui/calendar";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import { useAppDispatch } from "@/redux/hook";
+import { addTask } from "@/redux/features/task/taskSlice";
+import { ITask } from "@/types";
 
 export function AddTaskModal() {
   const form = useForm();
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const dispatch = useAppDispatch();
+
+  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+    dispatch(addTask(data as ITask));
   };
 
   return (
@@ -81,15 +91,41 @@ export function AddTaskModal() {
 
             <FormField
               control={form.control}
-              name="deuDate"
+              name="dueDate"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel> Due Date</FormLabel>
-                  <FormControl>
-                    <Textarea {...field} value={field.value || ""}></Textarea>
-                  </FormControl>
-                  <FormDescription />
-                  <FormMessage />
+                <FormItem className="flex flex-col">
+                  <FormLabel>Due Date</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-[240px] pl-3 text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value ? (
+                            format(field.value, "PPP")
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        // disabled={(date) =>
+                        //   date > new Date() || date < new Date("1900-01-01")
+                        // }
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
                 </FormItem>
               )}
             />
@@ -106,7 +142,7 @@ export function AddTaskModal() {
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a verified email to display" />
+                        <SelectValue placeholder="Select a priority" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -119,7 +155,7 @@ export function AddTaskModal() {
               )}
             />
 
-            <DialogFooter>
+            <DialogFooter className="mt-6">
               <Button type="submit">Save changes</Button>
             </DialogFooter>
           </form>
