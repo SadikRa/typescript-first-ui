@@ -32,14 +32,16 @@ import { Calendar } from "../ui/calendar";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import { useAppDispatch } from "@/redux/hook";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { addTask } from "@/redux/features/task/taskSlice";
 import { ITask } from "@/types";
+import { selectUser } from "@/redux/features/user/userSlice";
 
 export function AddTaskModal() {
   const form = useForm();
 
   const dispatch = useAppDispatch();
+  const user = useAppSelector(selectUser);
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     dispatch(addTask(data as ITask));
@@ -149,6 +151,31 @@ export function AddTaskModal() {
                       <SelectItem value="low">low</SelectItem>
                       <SelectItem value="medium">medium</SelectItem>
                       <SelectItem value="high">high</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="assignedTo"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Assign To</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a priority" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {user.map((user) => (
+                        <SelectItem value={user.id}>{user.name}</SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </FormItem>
