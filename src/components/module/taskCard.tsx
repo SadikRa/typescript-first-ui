@@ -5,7 +5,8 @@ import {
   deleteTask,
   toggleCompleteState,
 } from "@/redux/features/task/taskSlice";
-import { useAppDispatch } from "@/redux/hook";
+import { selectUser } from "@/redux/features/user/userSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { ITask } from "@/types";
 import { Trash2 } from "lucide-react";
 
@@ -15,6 +16,9 @@ interface IProps {
 
 const TaskCard = ({ task }: IProps) => {
   const dispatch = useAppDispatch();
+  const user = useAppSelector(selectUser);
+
+  const assignedUser = user.find((user) => user.id == task.assignedTo);
 
   return (
     <div className="border px-5 py-3 rounded-md">
@@ -45,6 +49,7 @@ const TaskCard = ({ task }: IProps) => {
           ></Checkbox>
         </div>
       </div>
+      <p>Assign To {assignedUser ? assignedUser.name : "NO one"}</p>
       <p>{task.description}</p>
     </div>
   );
